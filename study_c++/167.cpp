@@ -10,7 +10,9 @@
 1.1K
 相关企业
 
-给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 numbers[index1] 和 numbers[index2] ，则 1 <= index1 < index2 <= numbers.length 。
+给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，
+请你从数组中找出满足相加之和等于目标数 target 的两个数。
+如果设这两个数分别是 numbers[index1] 和 numbers[index2] ，则 1 <= index1 < index2 <= numbers.length 。
 
 以长度为 2 的整数数组 [index1, index2] 的形式返回这两个整数的下标 index1 和 index2。
 
@@ -43,8 +45,31 @@ using namespace std;
 class Solution {
 public:
     vector<int> twoSum(vector<int>& numbers, int target) {
-      vector<int> reVector;
-      
+      vector<int> reVector{0,0};
+      int numLen = numbers.size();
+      int *p, *q;
+      p = &numbers[0];
+      q = p + numLen -1;
+
+      while(q-p > 0){
+	if(*p + *q > target
+	   && q-p >= 0){//q move thought left
+	  q--;
+	}else if(*p + *q < target
+		 && q-p >= 0){//p move thought right
+	  p++;
+	}
+	if(*p + *q == target){
+	  //cout<<"p:"<<*p<<",q:"<<*q<<endl;
+	  //cout<<"location p:"<< p -&numbers[0]
+	  //    <<",q:"<< q - &numbers[0]
+	  //    <<endl;
+	  break;
+	}
+      }
+
+      reVector[0] = p - &numbers[0] + 1;
+      reVector[1] = q - &numbers[0] + 1;
       
       return reVector;
   }
@@ -56,7 +81,15 @@ test(Solution s,
      map<int,int> paramB,
      map<int,vector<int>> result){
   int i = 0;
+  paramA[i].push_back(2);
+  paramA[i].push_back(7);
+  paramA[i].push_back(11);
+  paramA[i].push_back(15);
+  paramB[i] = 9;
+  result[i].push_back(1);
+  result[i].push_back(2);
   //---------------------------------------------------------
+  i++;
   paramA[i].push_back(2);
   paramA[i].push_back(3);
   paramA[i].push_back(4);
@@ -110,3 +143,4 @@ main(){
 
 	return 0;	
 }
+
