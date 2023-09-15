@@ -1,7 +1,8 @@
 # study
 leetcode 150<br>
-167 no finish<br/>
-11  no finish<br/>
+double point<br/>
+167 finish<br/>
+11  finish<br/>
 15  no finish<br/>
 
 209 no finish<br/>
