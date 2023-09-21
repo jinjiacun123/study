@@ -1,0 +1,214 @@
+
+题目1：给定一个整数数组，编写一个函数来移除所有值为0的元素，并返回新数组的长度。要求在原数组上操作，不要使用额外的空间。例如，给定数组 [0, 1, 0, 3, 12]，函数应该返回长度为3的新数组 [1, 3, 12]。
+
+#include <iostream>
+#include <vector>
+
+int removeZeroes(std::vector<int>& nums) {
+    int index = 0;
+    	for (int i = 0; i < nums.size(); i++) {
+        	if (nums[i] != 0) {
+            		nums[index++] = nums[i];
+        	}
+        }
+    	if(index < = nums.size())
+		nums.erase(nums.begin() + index, nums.begin()+len);
+	return index;
+}
+
+int main() {
+    std::vector<int> nums = {0, 1, 0, 3, 12};
+    int newLength = removeZeroes(nums);
+    for (int i = 0; i < newLength; i++) {
+        std::cout << nums[i] << " ";
+    }
+    std::cout << std::endl;
+    return 0;
+}
+这段代码中存在一个bug，请找出并修复它。
+
+题目2：实现一个简单的栈，支持push、pop和top操作。存在一个bug。
+
+#include <iostream>
+#include <vector>
+
+class Stack {
+public:
+    void push(int x) {
+        data.push_back(x);
+    }
+
+    void pop() {
+        if (!data.empty()) {
+            data.pop_back();
+        }
+    }
+
+    int top() {
+	if(!data.empty())//alter
+        	return data.back();
+	return 0;
+    }
+
+private:
+    std::vector<int> data;
+};
+
+int main() {
+    Stack s;
+    s.push(1);
+    s.push(2);
+    s.push(3);
+    s.pop();
+    std::cout << s.top() << std::endl;
+    return 0;
+}
+这段代码中存在一个bug，请找出并修复它。
+
+题目3：实现一个简单的计时器类，支持start、stop和getElapsedTime操作。但是在实现getElapsedTime操作时，存在一个bug。
+
+#include <iostream>
+#include <chrono>
+
+class Timer {
+public:
+    void start() {
+        startTime = std::chrono::steady_clock::now();
+    }
+
+    void stop() {
+        endTime = std::chrono::steady_clock::now();
+    }
+
+    double getElapsedTime() {
+	std::chrono::steady_clock::time_point tmp;//alter:begin
+	if(startTime > endTime){
+		tmp = startTime; startTime = endTime; endTime = tmp;
+	}//alter:end
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+        return duration.count() / 1000.0;
+    }
+
+private:
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::steady_clock::time_point endTime;
+};
+
+int main() {
+    Timer timer;
+    timer.start();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    timer.stop();
+    std::cout << "Elapsed time: " << timer.getElapsedTime() << " seconds" << std::endl;
+    return 0;
+}
+
+题目4：实现一个简单的单链表，支持插入、删除和查找操作。但是在实现删除操作时，存在一个bug。
+
+#include <iostream>
+
+class LinkedList {
+public:
+    LinkedList() : head(nullptr) {}
+
+    ~LinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+
+    void insert(int value) {
+        Node* newNode = new Node(value);
+	if(newNode == nullptr)
+		return;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    void remove(int value) {
+	Node* current = head;
+        Node* prev = nullptr;
+        while (current != nullptr) {
+            if (current->value == value) {
+                if (prev != nullptr) {
+                    prev->next = current->next;
+		    delete current;
+		    current = prev->next;
+                } else {
+                    head = current->next;
+		    delete current;
+		    current = head;
+		//    return;
+                }
+                //delete current;
+		std::cout<<"delete"<<std::endl;
+		continue;
+            }
+            prev = current;
+            current = current->next;
+        }
+
+    }
+
+    bool find(int value) {
+        Node* current = head;
+        while (current != nullptr) {
+            if (current->value == value) {
+                return true;
+            }
+            current = current->next;
+        }
+        return false;
+    }
+
+private:
+    struct Node {
+        int value;
+        Node* next;
+
+        Node(int value) : value(value), next(nullptr) {}
+    };
+
+    Node* head;
+};
+
+int main() {
+    LinkedList list;
+    list.insert(1);
+    list.insert(2);
+    list.insert(3);
+    list.remove(2);
+    std::cout << "Find 2: " << list.find(2) << std::endl;
+    return 0;
+}
+这段代码中存在一个bug，请找出并修复它。
+
+
+题目5：设计一个生产者-消费者模型，其中有多个生产者线程和一个消费者线程。生产者线程负责生成数据，消费者线程负责处理数据。要求实现一个线程安全的队列，使得生产者线程可以并发地将数据放入队列，而消费者线程可以从队列中取出数据进行处理。尽可能考虑性能
+product:
+	while(true){
+		if(!q.is_full()){
+			P(i);
+			q.push(goods);
+			v(i);
+			lock();
+			i = (++i)/N;
+			unlock();
+		}
+	}
+
+
+consume:
+	while(true){
+		if(!q.is_empty()){
+			V(j);
+			value = q.pop();
+			P(j);
+			lock();
+			j = (++j)/N;
+			unlock();
+		}
+	}
