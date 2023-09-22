@@ -1,0 +1,257 @@
+
+    1. 写出下面程序的输出结果:（20分）
+(1)
+class B {
+    int m_data;
+public:
+    B() { cout << "B constructed\n"; }
+    ~B() { cout << "B destructed\n"; }
+    B(int i) : m_data(i) { cout << "B constructed with " << i << "\n"; }
+};
+
+B PlayB(B bb) { return bb; }
+
+int main()
+{
+    PlayB(5);
+}
+B constructed with 5
+B destructed
+B destructed
+
+(2)  
+#include <iostream>
+#include <exception>
+using namespace std;
+
+class CBase { virtual void dummy() {} };
+class CDerived : public CBase { int a; };
+
+int main() {
+    try {
+        CBase * pba = new CDerived;
+        CBase * pbb = new CBase;
+        CDerived * pd;
+
+        pd = dynamic_cast<CDerived*>(pba);
+        if (pd == 0) cout << "Null pointer on first type-cast" << endl;
+
+        pd = dynamic_cast<CDerived*>(pbb);
+        if (pd == 0) cout << "Null pointer on second type-cast" << endl;
+
+    }
+    catch (exception& e) { cout << "Exception: " << e.what(); }
+    return 0;
+}
+Null pointer on second type-case
+
+
+(3)
+#include <iostream>
+#include <vector>
+
+class Animal {
+public:
+    virtual void eat() const {
+        std::cout << "I eat like a generic Animal." << std::endl;
+    }
+    virtual ~Animal() {
+    }
+};
+
+class Wolf : public Animal {
+public:
+    void eat() const {
+        std::cout << "I eat like a wolf!" << std::endl;
+    }
+};
+
+class Fish : public Animal {
+public:
+    void eat() const {
+        std::cout << "I eat like a fish!" << std::endl;
+    }
+};
+
+class GoldFish : public Fish {
+public:
+    void eat() const {
+        std::cout << "I eat like a goldfish!" << std::endl;
+    }
+};
+
+class OtherAnimal : public Animal {
+};
+
+
+int main() {
+    std::vector<Animal*> animals;
+    animals.push_back(new Animal());
+    animals.push_back(new Wolf());
+    animals.push_back(new Fish());
+    animals.push_back(new GoldFish());
+    animals.push_back(new OtherAnimal());
+
+    for (std::vector<Animal*>::const_iterator it = animals.begin(); it != animals.end(); ++it) {
+        (*it)->eat();
+        delete *it;
+    }
+
+    return 0;
+}
+
+
+I eat like a generic Animal.
+I eat like a wolf!
+I eat like a fish!
+I eat like a goldfish!
+I eat like a generic Animal.
+(4)
+#include<stdio.h>
+int main()
+{
+    char a[] = "hello,world";
+    char* ptr = a;
+    printf("%c\n", *(ptr + 4));
+    printf("%c\n", ptr[4]);
+    printf("%c\n", a[4]);
+    printf("%c\n", *(a + 4));
+    *(ptr + 4) += 1;
+    printf("%s\n", a);
+    return 0;
+}
+
+o 
+o
+o
+o
+hellp,world
+    2. 选择题（20分）
+#include<iostream>
+#include <complex>
+using namespace std;
+
+class Base
+{
+public:
+    Base() { cout << "Base-ctor" << endl; };
+    virtual  ~Base() { cout << "Base-dtor" << endl; }
+    virtual  void f(int) { cout << "Base::f(int)" << endl; }
+    virtual  void f(double) { cout << "Base::f(double)" << endl; }
+    virtual  void g(int i = 10) { cout << "Base::g()" << i << endl; }
+};
+
+class Derived :public Base
+{
+public:
+    Derived() { cout << "Derived-ctor" << endl; }
+    virtual  ~Derived() { cout << "Derived-dtor" << endl; }
+
+    void f(complex<double> c) { cout << "Derived::f(complex)" << endl; }
+    virtual  void g(int i = 20) { cout << "Derived::g()" << i << endl; }
+};
+
+Base b;
+Derived d;
+Base* pb = new Derived;
+
+    （1） cout <<sizeof(Base)<<std::endl     D
+A．4     B.32    C.20     D.与平台相关
+    （2） cout <<sizeof(Derived)<<std::endl   D
+A．4      B.8     C.36    D.与平台相关
+    （3） pb→f(1.0)  B
+A. Derived::f(complex)  B.Base::f(double)  C.Base::f(int)  D. Derived::f(double)
+（4） pb→g() D
+      A.Base::g() 10  B.Base::g() 20  C. Derived::g() 10  D. Derived::g() 20
+
+
+    3. 编写与图形相关的应用程序，需要处理大量图形（Shape）信息.图形有矩形（Rectangle）、正方形（Square），圆形（Circle）等种类。（20分）
+    （1） 请使用面向对象的方法对以上应用进行设计，编写可能需要的类；
+    （2） 应用需要计算这些图形的面积，并且可能需要在某个设备上显示（使用标准输出上打印信息的方式作为示意）；
+    （3） 应用需要移动和旋转这些图形；
+    （4） 请给出实现以上应用功能的示例性调用代码，在main函数调用；
+#include<iostream>
+
+using namespace std;
+
+typedef enum{
+	up,
+	down,
+	left,
+	right
+}Direction;
+
+typedef enum{
+	clockwise,
+	counterclockwise
+}CircleDirection;
+
+class Shape{
+	public:
+		virtual float area();
+		virtual void move(Direction direc, float lenth);
+		virtual void rotate(CircleDirection direct, float angle);	
+};
+class Rectangle{
+        private:
+		float width, height;
+	public:
+		Rectangle(float width, float height){
+			this->width = width;
+			this->height = height;	
+		}
+		float area(){
+			return width * height;
+		}
+};
+class Square{
+	private:
+		float side;
+	public:
+		Square(float side){
+			this->side = side;
+		}
+		float area(){
+			return side * side;
+		}
+};
+class Circle{
+	private:
+		float radius;
+	public:
+		Circle(float radius){
+			this->radius = radius;
+		}
+		float area(){
+			return 3.14 * radius * radius;
+		}
+};
+int main(){
+
+	Rectangle r(10,20);
+	cout<<r.area()<<endl;
+
+	return 0;
+}
+
+     
+	
+
+    4. 构造函数为什么一般不定义为虚函数？而析构函数一般写成虚函数的原因？（10分）
+	因为构造函数可以带有参数，这样会导致虚函数无法绑定，而析构函数是无参的只有一个函数。     
+
+    5. std::vector和std::list有什么区别，分别适用什么应用场景？（10分）
+	vector类似数组，是一块连续的内存空间，在数据超过一定长度需要重新分配扩大处理，在不需要扩展时，效率访存效率较高；而list是类似链表，不需要一个固定内存块，但是插入/删除效率较高，查询需要遍历指针。
+       应用场景:vector适合应用于小数据的处理，效率高；而list适合大量数据插入删除操作场合.
+    6. std::set和std::map有什么区别，分别适用什么应用场景？（10分）
+	set是存储某种类型的唯一值的一个容器;而map是一种键值对的模式，通过一个key查询一个value的过程，而key是唯一的，value可以其他某一种类型的重复值，而key一般有一定的限制，不是所有类型都可以使用.
+    应用场景:set一般适合场景为防止数据重复的情况;map适合的场景是一种快速查询的情况使用。
+
+    7. 已知两个二维线段S1(P1, P2)，S2(Q1, Q2)，判断两个线段是否平行？写出伪代码。（10分）
+        k1 = (P2.y - P1.y)/(P2.x - P1.x);
+	k2 = (Q2.y - Q1.y)/(Q2.x - Q1.x);
+	if(k1 == k2)
+	  //平行	
+
+
+
