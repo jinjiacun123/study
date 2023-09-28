@@ -1,0 +1,5 @@
+bs.o:
+	as86 -o bs.o bs.s
+bc.o:
+	bcc -c ansi bc.c -o bc.o
+
